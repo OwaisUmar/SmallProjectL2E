@@ -1,0 +1,12 @@
+#element {
+    border: 2px solid silver;
+    margin: 70px 300px;
+    padding: .55em .625em .95em;
+    align-items: center;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.intext {
+    border: 1px solid lightslategrey;
+    padding: 8px;
+}

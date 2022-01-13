@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Student Registration Form</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="bootstrap.css" rel="stylesheet" type="text/css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="http://login2explore.com/jpdb/resources/js/0.0.3/jpdb-commons.js"></script>
+
+</head>
+
+<body>
+    <div class="container"><br>
+        <h2>View details</h2><br>
+        <h5>Enter your roll number for details:</h5><br>
+        <div class="row">
+            <div class="col-lg-12">
+                <form id="studForm" method="post">
+                    <div class="form-group">
+                        <label for="roll">Roll No: </label>
+                        <input type="text" class="form-control" name="roll" id="roll" placeholder="Enter roll no." required>
+                    </div>
+                    <input type="button" class="btn btn-primary" id="backBtn" value="Back">
+                    <input type="button" class="btn btn-primary" id="studSave" value="Submit" onclick="updateVal();">
+                </form>
+                <br>
+            </div>
+        </div>
+        <div class="panel panel-info">
+            <div class="panel-header">
+            </div>
+
+            <div class="panel-body">
+                <h4>Your Details:</h4><br>
+
+                <div class="row">
+                    <div class="col-lg-2">Name:</div>
+                    <div class="col-lg-4"> <label for="" text="" id="dataRetrievedName" class="form-control"></label></div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-2">Contact:</div>
+                    <div class="col-lg-4"> <label for="" text="" id="dataRetrievedContact" class="form-control"></label></div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-2">Email id:</div>
+                    <div class="col-lg-4"> <label for="" text="" id="dataRetrievedEmail" class="form-control"></label></div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-2">Roll no.:</div>
+                    <div class="col-lg-4"> <label for="" text="" id="dataRetrievedRoll" class="form-control"></label></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $("#roll").focus();
+
+        function validateAndGetFormData() {
+            var rollVar = $("#roll").val();
+            if (rollVar === "") {
+                alert("Roll no. Required Value");
+                $("#roll").focus();
+                return "";
+            }
+            var jsonStrObj = {
+                roll: rollVar
+            };
+            return JSON.stringify(jsonStrObj);
+        }
+
+
+        function resetForm() {
+            $("#roll").val("");
+            $("#roll").focus();
+        }
+
+        function updateVal() {
+            var jsonStr = validateAndGetFormData();
+            if (jsonStr === "") {
+                return;
+            }
+            var getReqStr = createGETRequest("", // Enter your token no. here
+                "Student", "Student_Data", jsonStr);
+
+            alert(getReqStr);
+            jQuery.ajaxSetup({
+                async: false
+            });
+            var resultObj = executeCommandAtGivenBaseUrl(getReqStr,
+                "http://api.login2explore.com:5577", "/api/irl");
+            alert(JSON.stringify(resultObj));
+
+            jQuery.ajaxSetup({
+                async: true
+            });
+
+            var jsonData = JSON.stringify(resultObj);
+
+            var details = jsonData.split("\"");
+
+            $('#dataRetrievedName').text(details[18].replace("\\", ""));
+            $('#dataRetrievedContact').text(details[10].replace("\\", ""));
+            $('#dataRetrievedEmail').text(details[22].replace("\\", ""));
+            $('#dataRetrievedRoll').text(details[14].replace("\\", ""));
+
+            resetForm();
+        }
+
+        $('#backBtn').click(function() {
+            window.location.href = "index.html";
+
+        });
+    </script>
+</body>
+
+</html>

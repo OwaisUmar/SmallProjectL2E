@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Student Registration Form</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="bootstrap.css" rel="stylesheet" type="text/css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="http://login2explore.com/jpdb/resources/js/0.0.3/jpdb-commons.js"></script>
+
+</head>
+
+<body>
+    <div class="container"><br>
+        <h2>View details</h2><br>
+        <h5>Enter your roll number to delete your profile:</h5><br>
+        <div class="row">
+            <div class="col-lg-12">
+                <form id="studForm" method="post">
+                    <div class="form-group">
+                        <label for="roll">Roll No: </label>
+                        <input type="text" class="form-control" name="roll" id="roll" placeholder="Enter roll no." required>
+                    </div>
+                    <input type="button" class="btn btn-primary" id="backBtn" value="Back">
+                    <input type="button" class="btn btn-primary" id="studSave" value="Submit" onclick="deleteVal();">
+                </form>
+                <br>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $("#roll").focus();
+
+        function validateAndGetFormData() {
+            var rollVar = $("#roll").val();
+            if (rollVar === "") {
+                alert("Roll no. Required Value");
+                $("#roll").focus();
+                return "";
+            }
+            var jsonStrObj = {
+                roll: rollVar
+            };
+            return JSON.stringify(jsonStrObj);
+        }
+
+
+        function resetForm() {
+            $("#roll").val("");
+            $("#roll").focus();
+        }
+
+        function deleteVal() {
+            var jsonStr = validateAndGetFormData();
+            if (jsonStr === "") {
+                return;
+            }
+            var recID = parseInt(document.getElementById("roll").value);
+            var removeReqStr = createREMOVERecordRequest("", // Enter your token no. here
+                "Student", "Student_Data", recID);
+
+            alert(removeReqStr);
+            jQuery.ajaxSetup({
+                async: false
+            });
+            var resultObj = executeCommandAtGivenBaseUrl(removeReqStr,
+                "http://api.login2explore.com:5577", "/api/iml");
+            alert(JSON.stringify(resultObj));
+            alert("Record with roll no. " + stringify(roll) + " deleted.");
+            jQuery.ajaxSetup({
+                async: true
+            });
+
+            resetForm();
+        }
+
+        $('#backBtn').click(function() {
+            window.location.href = "index.html";
+
+        });
+    </script>
+</body>
+
+</html>

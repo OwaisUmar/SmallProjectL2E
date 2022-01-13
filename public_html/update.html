@@ -14,7 +14,8 @@
 
 <body>
     <div class="container"><br>
-        <h2>Student details</h2><br>
+        <h2>Update details</h2><br>
+        <h5>Enter your details to update:</h5><br>
         <div class="row">
             <div class="col-lg-3">
                 <form id="studForm" method="post">
@@ -37,9 +38,9 @@
                     <div class="form-group">
                         <label for="pass">Password:</label>
                         <input type="password" class="form-control" id="pass" placeholder="Enter password" name="pass">
-                    </div>
+                    </div><br>
                     <input type="button" class="btn btn-primary" id="backBtn" value="Back">
-                    <input type="button" class="btn btn-primary" id="studSave" value="Save" onclick="saveStudent();">
+                    <input type="button" class="btn btn-primary" id="studSave" value="Submit" onclick="updateVal();">
                 </form>
             </div>
         </div>
@@ -74,10 +75,10 @@
                 $("#contact").focus();
                 return "";
             }
-            var branchVar = $("#pass").val();
+            var branchVar = $("#branch").val();
             if (branchVar === "") {
-                alert("Student Email is Required Value");
-                $("#pass").focus();
+                alert("Student Branch is Required Value");
+                $("#branch").focus();
                 return "";
             }
             var jsonStrObj = {
@@ -85,7 +86,7 @@
                 name: nameVar,
                 email: emailVar,
                 contact: contactVar,
-                pass: branchVar
+                branch: branchVar
             };
             return JSON.stringify(jsonStrObj);
         }
@@ -96,23 +97,24 @@
             $("#name").val("");
             $("#email").val("");
             $("#contact").val("");
-            $("#pass").val("");
+            $("#branch").val("");
             $("#roll").focus();
         }
 
-        function saveStudent() {
+        function updateVal() {
             var jsonStr = validateAndGetFormData();
             if (jsonStr === "") {
                 return;
             }
-            var putReqStr = createPUTRequest("", // Enter your token no. here
-                jsonStr, "Student", "Student_Data");
+            var recID = parseInt(document.getElementById("roll").value);
+            var updateReqStr = createUPDATERecordRequest("", // Enter your token no. here
+                jsonStr, "Student", "Student_Data", recID);
 
-            alert(putReqStr);
+            alert(updateReqStr);
             jQuery.ajaxSetup({
                 async: false
             });
-            var resultObj = executeCommandAtGivenBaseUrl(putReqStr,
+            var resultObj = executeCommandAtGivenBaseUrl(updateReqStr,
                 "http://api.login2explore.com:5577", "/api/iml");
             alert(JSON.stringify(resultObj));
             jQuery.ajaxSetup({
